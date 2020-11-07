@@ -1,0 +1,39 @@
+/**index.wxss**/
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: black;
+  padding: 40rpx;
+} 
+
+.content {
+  height: 100%;
+  width: 100%;
+  /* background-color: yellow; */
+  position: relative;
+}
+
+.content image {
+  height: 100%;
+  width: 100%;
+}
+
+.cut_box {
+  z-index: 10;
+  height: 100%;
+  width: 100%;
+  border: 1px solid red;
+  background-color: yellow;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bottom-tab {
+  width: 100vw;
+  background-color: brown;
+}

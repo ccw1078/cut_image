@@ -1,0 +1,11 @@
+<!--index.wxml-->
+<view class="page">
+  <view class="container" style="height: {{container_height}}rpx">
+    <!-- <view class="content" style="height:{{content_height}}rpx; width: {{content_width}}rpx"> -->
+    <view class="content">
+      <image src="{{img_url}}" mode="aspectFit" id="img"></image>
+      <!-- <view class="cut_box"></view> -->
+    </view>
+  </view>
+  <view class="bottom-tab" style="height: {{bottom_tab_height}}rpx"></view>
+</view>
