@@ -13,7 +13,7 @@
 .content {
   height: 100%;
   width: 100%;
-  /* background-color: yellow; */
+  background-color: yellow;
   position: relative;
 }
 
@@ -25,7 +25,7 @@
 #cut_box {
   z-index: 5;
   border: 1px solid red;
-  /* background-color: yellow; */
+  background-color: green;
   position: absolute;
 }
 
@@ -68,10 +68,6 @@
   height: 80rpx;
 }
 
-/* 
-.canvas {
-  position: absolute;
-} */
 
 .bottom_tab {
   width: 100vw;

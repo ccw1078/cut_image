@@ -11,19 +11,19 @@ function touch_start (event, instance) {
     x: touch.pageX,
     y: touch.pageY
   }
-  console.log('start position', JSON.stringify(start_position));
+  // console.log('start position', JSON.stringify(start_position));
   cut_box = instance.selectComponent('#cut_box');
   raw_style = cut_box.getDataset().style;
-  console.log('raw_style', JSON.stringify(raw_style));
+  // console.log('raw_style', JSON.stringify(raw_style));
   current_style = get_current_style(cut_box);
-  console.log('current_style', JSON.stringify(current_style));
+  // console.log('current_style', JSON.stringify(current_style));
 }
 
 // 拖动左上角，根据拖动距离，改变剪裁框大小
 function touch_move_top_left (event, instance) {
     var touch = event.touches[0];
     var move_delta = get_move_delta(touch);
-    console.log('move_delta', JSON.stringify(move_delta));
+    // console.log('move_delta', JSON.stringify(move_delta));
     cut_box.setStyle({
       left: int_to_px(current_style.left + move_delta.x),
       top: int_to_px(current_style.top + move_delta.y),
@@ -37,7 +37,7 @@ function touch_move_top_left (event, instance) {
 function touch_move_top_right (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  console.log('move_delta', JSON.stringify(move_delta));
+  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     left: int_to_px(current_style.left),
     top: int_to_px(current_style.top + move_delta.y),
@@ -51,7 +51,7 @@ function touch_move_top_right (event, instance) {
 function touch_move_bottom_left (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  console.log('move_delta', JSON.stringify(move_delta));
+  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     left: int_to_px(current_style.left + move_delta.x),
     top: int_to_px(current_style.top),
@@ -65,7 +65,7 @@ function touch_move_bottom_left (event, instance) {
 function touch_move_bottom_right (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  console.log('move_delta', JSON.stringify(move_delta));
+  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     top: int_to_px(current_style.top),
     left: int_to_px(current_style.left),

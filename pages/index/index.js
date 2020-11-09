@@ -4,7 +4,8 @@ const app = getApp()
 const img_url = [
   "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910085532.png",
   "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910091535.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201107180151.png"
+  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201107180151.png",
+  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201109191756.jpg"
 ][0]
 
 Page({
@@ -24,8 +25,6 @@ Page({
       left: 0
     },
     canvas_id: 'cut_img',
-    uri: undefined,
-    hide_canvas: true
   },
   // 根据裁剪框尺寸对图片进行裁剪
   cut_image: function () {
@@ -38,67 +37,45 @@ Page({
       const cut_box_node = res[0];
       const current_style = convert_style_to_int(cut_box_node, props);
       const origin_style = that.data.cut_box_style;
-      console.log('current_style', current_style);
-      console.log('origin_style', origin_style);
-      // const ctx = wx.createCanvasContext(that.data.canvas_id);
-      // ctx.drawImage(that.data.images[0].path, 0, 0, 150, 150);
-      // ctx.draw(false, function () {
-      //   console.log('draw ok');
-      //   wx.canvasToTempFilePath({
-      //     x: 0,
-      //     y: 0,
-      //     width: 100,
-      //     height: 100,
-      //     canvasId: that.data.canvas_id,
-      //     success: function (res) {
-      //       console.log("canvasToTempFilePath res", res.tempFilePath);
-      //       that.setData({
-      //         uri: res.tempFilePath,
-      //       });
-      //     }
-      //   });
-      // });
       wx.createSelectorQuery().select('#cut_img')
       .fields({ node: true, size: true })
       .exec(res => {
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
+        const current_image = that.data.images[0];
+        canvas.height = Math.ceil(current_image.height);
+        canvas.width = Math.ceil(current_image.width);
+
         const img = canvas.createImage();
-        img.src = that.data.images[0].url;
         img.onload = () => {
-          ctx.drawImage(img, 0, 0, 50, 50);
+          const sx = Math.ceil((current_style.left - origin_style.left) / origin_style.width * current_image.width);
+          const sy = Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height);
+          const sWidth = Math.ceil(current_style.width / origin_style.width * current_image.width);
+          const sHeight = Math.ceil(current_style.height / origin_style.height  * current_image.height);
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
           wx.canvasToTempFilePath({
-            // x: 0,
-            // y: 0,
-            // width: 50,
-            // height: 50,
+            width: sWidth,
+            height: sHeight,
             canvas: canvas,
             success: function (res) {
-              console.log("canvasToTempFilePath res", res.tempFilePath);
+              const cut_box_style = get_cut_box_style (sWidth, sHeight, that.data.content_size)
               that.setData({
+                cut_box_style: cut_box_style,
                 images: that.data.images.concat([{
                   url: res.tempFilePath,
-                  width: 367,
-                  height: 389,
+                  width: sWidth,
+                  height: sHeight,
                   path: res.tempFilePath,
                   type: 'png'
                 }]),
+                
               });
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
           });
         }
-        
+        img.src = that.data.images[0].url;
       });
-    });
-  },
-  // 初始化裁剪框
-  init_cut_box: function () {
-    const that = this;
-    const images = that.data.images;
-    const img = images[images.length - 1];
-    const cut_box_style = get_cut_box_style (img.width, img.height, that.data.content_size);
-    that.setData({
-      cut_box_style: cut_box_style,
     });
   },
   onLoad: function () {
@@ -109,9 +86,11 @@ Page({
       src: img_url,
       success: function(result) {
         // console.log('get image info', JSON.stringify(result));
+        const cut_box_style = get_cut_box_style (result.width, result.height, content_size);
         that.setData({
           container_height: container_height,
           content_size: content_size,
+          cut_box_style: cut_box_style,
           images: [{
             url: img_url,
             width: result.width,
@@ -120,7 +99,6 @@ Page({
             type: result.type
           }]
         });
-        that.init_cut_box();
       }
     });
   }
@@ -165,17 +143,17 @@ function get_cut_box_style (img_width, img_height, content_size) {
   let px_ratio = app.globalData.px_ratio;
   let cut_box_style = {};
   if (img_width / img_height >= content_size.width / content_size.height) {
-    cut_box_style.width = Math.round(content_size.width / px_ratio); 
+    cut_box_style.width = Math.ceil(content_size.width / px_ratio); 
     scale = content_size.width / img_width;
-    cut_box_style.height = Math.round(img_height * scale / px_ratio);
+    cut_box_style.height = Math.ceil(img_height * scale / px_ratio);
     cut_box_style.left = 0;
-    cut_box_style.top = Math.round((content_size.height / px_ratio - cut_box_style.height) * 0.5);
+    cut_box_style.top = Math.ceil((content_size.height / px_ratio - cut_box_style.height) * 0.5);
   } else {
-    cut_box_style.height = Math.round(content_size.height / px_ratio);
+    cut_box_style.height = Math.ceil(content_size.height / px_ratio);
     scale = content_size.height / img_height;
-    cut_box_style.width = Math.round(img_width * scale / px_ratio);
+    cut_box_style.width = Math.ceil(img_width * scale / px_ratio);
     cut_box_style.top = 0;
-    cut_box_style.left = Math.round((content_size.width / px_ratio - cut_box_style.width) * 0.5);
+    cut_box_style.left = Math.ceil((content_size.width / px_ratio - cut_box_style.width) * 0.5);
   }
   return cut_box_style;
 }

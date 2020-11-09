@@ -10,6 +10,7 @@ App({
         that.globalData.window_height = Math.ceil(fix_window_width * ratio);
         that.globalData.window_width = fix_window_width;
         that.globalData.px_ratio = fix_window_width / result.windowWidth;
+        that.globalData.pixelRatio = result.pixelRatio;
       },
     })
   },
