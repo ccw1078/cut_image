@@ -12,7 +12,7 @@ function touch_start (event, instance) {
     y: touch.pageY
   }
   console.log('start position', JSON.stringify(start_position));
-  cut_box = instance.selectComponent('.cut_box');
+  cut_box = instance.selectComponent('#cut_box');
   raw_style = cut_box.getDataset().style;
   console.log('raw_style', JSON.stringify(raw_style));
   current_style = get_current_style(cut_box);

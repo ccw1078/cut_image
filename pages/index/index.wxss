@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  background-color: black;
+  /* background-color: black; */
   padding: 40rpx;
 } 
 
@@ -22,7 +22,7 @@
   width: 100%;
 }
 
-.cut_box {
+#cut_box {
   z-index: 5;
   border: 1px solid red;
   /* background-color: yellow; */
@@ -68,11 +68,17 @@
   height: 80rpx;
 }
 
-
+/* 
+.canvas {
+  position: absolute;
+} */
 
 .bottom_tab {
   width: 100vw;
-  background-color: brown;
+  /* background-color: black; */
   position: absolute;
   bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
