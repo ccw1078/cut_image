@@ -1,11 +1,14 @@
 <!--index.wxml-->
-<view class="page">
-  <view class="container" style="height: {{container_height}}rpx">
-    <!-- <view class="content" style="height:{{content_height}}rpx; width: {{content_width}}rpx"> -->
-    <view class="content">
-      <image src="{{img_url}}" mode="aspectFit" id="img"></image>
-      <!-- <view class="cut_box"></view> -->
+<wxs module="setstyle" src="./setstyle.wxs"></wxs>
+<view class="container" style="height: {{container_height}}rpx">
+  <view class="content" style="height:{{content_height}}rpx; width: {{content_width}}rpx">
+    <image src="{{img_url}}" mode="aspectFit" id="img"></image>
+    <view class="cut_box" style="height:{{cut_box_style.height}}px; width:{{cut_box_style.width}}px; top:{{cut_box_style.top}}px; left:{{cut_box_style.left}}px" data-style="{{cut_box_style}}">
+        <view id="corner_top_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
+        <view id="corner_top_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
+        <view id="corner_bottom_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
+        <view id="corner_bottom_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
     </view>
   </view>
-  <view class="bottom-tab" style="height: {{bottom_tab_height}}rpx"></view>
 </view>
+<view class="bottom_tab" style="height: {{bottom_tab_height}}rpx"></view>

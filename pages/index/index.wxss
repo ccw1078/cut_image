@@ -23,17 +23,56 @@
 }
 
 .cut_box {
-  z-index: 10;
-  height: 100%;
-  width: 100%;
+  z-index: 5;
   border: 1px solid red;
-  background-color: yellow;
+  /* background-color: yellow; */
+  position: absolute;
+}
+
+#corner_top_left {
+  border-top: 2px solid red;
+  border-left: 2px solid red;
   position: absolute;
   top: 0;
   left: 0;
 }
 
-.bottom-tab {
+#corner_top_right {
+  border-top: 2px solid red;
+  border-right: 2px solid red;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#corner_bottom_right {
+  border-bottom: 2px solid red;
+  border-right: 2px solid red;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#corner_bottom_left {
+  border-bottom: 2px solid red;
+  border-left: 2px solid red;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+
+.corner_block {
+  /* background-color: yellow; */
+  width: 80rpx;
+  height: 80rpx;
+}
+
+
+
+.bottom_tab {
   width: 100vw;
   background-color: brown;
+  position: absolute;
+  bottom: 0;
 }
