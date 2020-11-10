@@ -1,12 +1,14 @@
 //index.js
 //获取应用实例
 const app = getApp()
-const img_url = [
+const img_urls = [
+  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110101924.png",
   "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910085532.png",
   "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910091535.png",
   "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201107180151.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201109191756.jpg"
-][0]
+  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201109191756.jpg",
+  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110110506.jpg"
+];
 
 Page({
   data: {
@@ -18,6 +20,7 @@ Page({
       height: 0
     },
     images: [],
+    img_mode: 'aspectFit',
     cut_box_style: {
       height: 0,
       width: 0,
@@ -28,7 +31,23 @@ Page({
   },
   // 根据裁剪框尺寸对图片进行裁剪
   cut_image: function () {
-    let that = this;
+    // const that = this;
+    // that.setData({
+    //   images: that.data.images.concat([{
+    //     url: 'https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110101924.png',
+    //     width: 108,
+    //     height: 127,
+    //     path: 'http://tmp/wx59defcf3a2884e98.o6zAJs8qVRlwlCZBkHkOxCGSZSJE.Muyz0DXAl04x84f849834b52d84aa5f5684234843abf.png',
+    //     type: 'png'
+    //   }]),
+    //   cut_box_style: {
+    //     height: 394,
+    //     width: 335,
+    //     top: 55,
+    //     left: 0
+    //   }
+    // });
+    const that = this;
     const props = ['width', 'height', 'left', 'top'];
     wx.createSelectorQuery().select('#cut_box')
     .fields({ computedStyle: props })
@@ -43,8 +62,8 @@ Page({
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
         const current_image = that.data.images[0];
-        canvas.height = Math.ceil(current_image.height);
-        canvas.width = Math.ceil(current_image.width);
+        canvas.height = current_image.height;
+        canvas.width = current_image.width;
 
         const img = canvas.createImage();
         img.onload = () => {
@@ -58,6 +77,7 @@ Page({
             height: sHeight,
             canvas: canvas,
             success: function (res) {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
               const cut_box_style = get_cut_box_style (sWidth, sHeight, that.data.content_size)
               that.setData({
                 cut_box_style: cut_box_style,
@@ -68,9 +88,7 @@ Page({
                   path: res.tempFilePath,
                   type: 'png'
                 }]),
-                
               });
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
           });
         }
@@ -83,7 +101,7 @@ Page({
     const container_height = get_container_height (that.data.bottom_tab_height);
     const content_size = get_content_size (container_height, that.data.content_margin);
     wx.getImageInfo({
-      src: img_url,
+      src: img_urls[1],
       success: function(result) {
         // console.log('get image info', JSON.stringify(result));
         const cut_box_style = get_cut_box_style (result.width, result.height, content_size);
@@ -92,7 +110,7 @@ Page({
           content_size: content_size,
           cut_box_style: cut_box_style,
           images: [{
-            url: img_url,
+            url: img_urls[1],
             width: result.width,
             height: result.height,
             path: result.path,

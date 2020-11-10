@@ -4,6 +4,22 @@ var current_style = {}; // 剪裁框当前样式
 var raw_style = {}; // 剪裁框初始样式
 
 
+// 监听prop，当改变时，重新设置 cut_box 样式
+function prop_observer (newValue, oldValue, ownerInstance, instance) {
+  if (oldValue === undefined) {
+    return;
+  }
+  cut_box = ownerInstance.selectComponent('#cut_box');
+  console.log('newValue', JSON.stringify(newValue));
+  raw_style = newValue;
+  cut_box.setStyle({
+    left: int_to_px(newValue.left),
+    top: int_to_px(newValue.top),
+    width: int_to_px(newValue.width),
+    height: int_to_px(newValue.height)
+  });
+}
+
 // 获取拖动开始时的初始数据
 function touch_start (event, instance) {
   var touch = event.touches[0];
@@ -12,8 +28,8 @@ function touch_start (event, instance) {
     y: touch.pageY
   }
   // console.log('start position', JSON.stringify(start_position));
-  cut_box = instance.selectComponent('#cut_box');
-  raw_style = cut_box.getDataset().style;
+  // cut_box = instance.selectComponent('#cut_box');
+  // raw_style = cut_box.getDataset().style;
   // console.log('raw_style', JSON.stringify(raw_style));
   current_style = get_current_style(cut_box);
   // console.log('current_style', JSON.stringify(current_style));
@@ -149,5 +165,6 @@ module.exports = {
   touch_move_top_left: touch_move_top_left,
   touch_move_top_right: touch_move_top_right,
   touch_move_bottom_left: touch_move_bottom_left,
-  touch_move_bottom_right: touch_move_bottom_right
+  touch_move_bottom_right: touch_move_bottom_right,
+  prop_observer: prop_observer
 }

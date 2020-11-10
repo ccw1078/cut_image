@@ -3,23 +3,18 @@
 <view class="page">
   <view class="container" style="height: {{container_height}}rpx">
     <view class="content" style="height:{{content_size.height}}rpx; width: {{content_size.width}}rpx">
-      <image src="{{images[images.length - 1].path}}" mode="aspectFit" id="img"></image>
-      <view id="cut_box" style="height:{{cut_box_style.height}}px; width:{{cut_box_style.width}}px; top:{{cut_box_style.top}}px; left:{{cut_box_style.left}}px" data-style="{{cut_box_style}}">
+      <image src="{{images[images.length - 1].path}}" mode="{{img_mode}}" id="img"></image>
+      <view id="cut_box" prop="{{cut_box_style}}" change:prop="{{setstyle.prop_observer}}">
           <view id="corner_top_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
           <view id="corner_top_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
           <view id="corner_bottom_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
           <view id="corner_bottom_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
       </view>
-      <!-- <canvas id="{{canvas_id}}" type="2d"></canvas> -->
     </view>
-    
   </view>
-  <!-- <canvas id="{{canvas_id}}" type="2d" style="height:200rpx; width:200rpx"></canvas> -->
   <canvas id="{{canvas_id}}" type="2d"></canvas>
   <view class="bottom_tab" style="height: {{bottom_tab_height}}rpx">
     <button size='default' type='primary' bindtap="cut_image">裁剪</button>
   </view>
-  
 </view>
 
-<!-- <image wx:if="{{uri}}" src="{{uri}}" style="height:200rpx; width: 200rpx; z-index:20"></image> -->
