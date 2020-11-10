@@ -73,9 +73,9 @@ Page({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const current_image = images[images.length - 1];
       // 当旋转角度为90度或270度时，图片的宽高刚好对调
-      const is_rotated = current_image.rotate % 180 === 0;
-      canvas.height = is_rotated ? current_image.height : current_image.width;
-      canvas.width = is_rotated ? current_image.width : current_image.height;
+      const not_rotated = current_image.rotate % 180 === 0;
+      canvas.height = not_rotated ? current_image.height : current_image.width;
+      canvas.width = not_rotated ? current_image.width : current_image.height;
       const img = canvas.createImage();
       img.onload = () => {
         ctx.save();
@@ -105,12 +105,21 @@ Page({
     .fields({ node: true, size: true })
     .exec(res => {
       const canvas = res[0].node;
+      wx.showLoading({
+        title: '正在保存中',
+      });
       wx.canvasToTempFilePath({
         canvas: canvas,
         success: function (res) {
-          console.log(res.tempFilePath);
           that.setData({
             tempFilePath: res.tempFilePath
+          });
+          wx.hideLoading({
+            success: res => {
+              wx.showToast({
+                title: '保存成功',
+              })
+            }
           });
         }
       });
@@ -120,7 +129,7 @@ Page({
     const that = this;
     const container_height = get_container_height (that.data.bottom_tab_height);
     const content_size = get_content_size (container_height, that.data.content_margin);
-    const img_index = 1;
+    const img_index = 4;
     wx.getImageInfo({
       src: img_urls[img_index],
       success: function(img) {
@@ -228,9 +237,12 @@ function get_cut_box_style (image, content_size) {
   const px_ratio = app.globalData.px_ratio;
   let cut_box_style = {};
   // 当旋转角度为90度或270度时，图片的宽高刚好对调
-  const is_rotated = image.rotate % 180 === 0;
-  const img_width = is_rotated ? image.width : image.height;
-  const img_height = is_rotated ? image.height : image.width;
+  if (!image.rotate) {
+    image.rotate = 0;
+  }
+  const not_rotated = image.rotate % 180 === 0;
+  const img_width = not_rotated ? image.width : image.height;
+  const img_height = not_rotated ? image.height : image.width;
   if (img_width / img_height >= content_size.width / content_size.height) {
     cut_box_style.width = Math.ceil(content_size.width / px_ratio); 
     scale = content_size.width / img_width;
