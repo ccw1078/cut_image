@@ -16,7 +16,8 @@
   <view class="bottom_tab" style="height: {{bottom_tab_height}}rpx">
     <button size='mini' type="default" bindtap="undo" disabled="{{images.length <= 1}}">撤销</button>
     <button size='mini' type="default" bindtap="rotate_image">旋转</button>
-    <button size='default' type='primary' bindtap="cut_image">裁剪</button>
+    <button size='mini' type='primary' bindtap="cut_image">裁剪</button>
+    <button size='mini' type="default" bindtap="save">保存</button>
   </view>
 </view>
 

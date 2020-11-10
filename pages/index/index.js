@@ -31,19 +31,14 @@ Page({
   rotate_image: function () {
     const that = this;
     const images = that.data.images;
-    if (images.length === 0) return;
-    const props = that.data.props;
-    wx.createSelectorQuery().select('#cut_box')
-    .fields({ computedStyle: props })
-    .exec(res => {
-      const images = that.data.images;
-      const current_image = images[images.length - 1];
-      const rotated_image = get_rotated_image (current_image);
-      const new_cut_box_style = get_cut_box_style (rotated_image, that.data.content_size);
-      that.setData({
-        cut_box_style: new_cut_box_style,
-        images: that.data.images.concat([rotated_image]),
-      });
+    const count = images.length;
+    if (count < 1) return;
+    const current_image = images[count - 1];
+    const rotated_image = get_rotated_image (current_image);
+    const new_cut_box_style = get_cut_box_style (rotated_image, that.data.content_size);
+    that.setData({
+      cut_box_style: new_cut_box_style,
+      images: that.data.images.concat([rotated_image]),
     });
   },
   // 根据当前裁剪框尺寸，计算裁剪后的图片尺寸和新的裁剪框尺寸
@@ -102,6 +97,23 @@ Page({
     that.setData({
       cut_box_style: previous_cut_box_style,
       images: that.data.images.slice(0, images_count - 1),
+    });
+  },
+  save: function () {
+    const that = this;
+    wx.createSelectorQuery().select('#cut_img')
+    .fields({ node: true, size: true })
+    .exec(res => {
+      const canvas = res[0].node;
+      wx.canvasToTempFilePath({
+        canvas: canvas,
+        success: function (res) {
+          console.log(res.tempFilePath);
+          that.setData({
+            tempFilePath: res.tempFilePath
+          });
+        }
+      });
     });
   },
   onLoad: function () {
