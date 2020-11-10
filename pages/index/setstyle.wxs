@@ -1,0 +1,172 @@
+var cut_box; // 剪裁框
+var start_position; // 拖动时的起始位置
+var current_style = {}; // 剪裁框当前样式
+var origin_style = {}; // 剪裁框初始样式
+var canvas; // 画布
+
+// 监听prop属性，当 prop 改变时，更新裁剪框和canvas的样式
+function prop_observer (newValue, oldValue, ownerInstance, instance) {
+  if (oldValue === undefined) {
+    return;
+  }
+  canvas = ownerInstance.selectComponent('#cut_img');
+  canvas.setStyle({
+    width: int_to_px(newValue.width),
+    height: int_to_px(newValue.height)
+  });
+  // 调用逻辑层的 draw_img 方法，重新绘图
+  ownerInstance.callMethod("draw_img");
+  cut_box = ownerInstance.selectComponent('#cut_box');
+  console.log('newValue', JSON.stringify(newValue));
+  origin_style = newValue;
+  cut_box.setStyle({
+    left: int_to_px(newValue.left),
+    top: int_to_px(newValue.top),
+    width: int_to_px(newValue.width),
+    height: int_to_px(newValue.height)
+  });
+}
+
+// 获取拖动开始时的初始数据
+function touch_start (event, instance) {
+  var touch = event.touches[0];
+  start_position = {
+    x: touch.pageX,
+    y: touch.pageY
+  }
+  current_style = get_current_style(cut_box);
+}
+
+// 拖动左上角，根据拖动距离，改变剪裁框大小
+function touch_move_top_left (event, instance) {
+    var touch = event.touches[0];
+    var move_delta = get_move_delta(touch);
+    // console.log('move_delta', JSON.stringify(move_delta));
+    cut_box.setStyle({
+      left: int_to_px(current_style.left + move_delta.x),
+      top: int_to_px(current_style.top + move_delta.y),
+      width: int_to_px(current_style.width - move_delta.x),
+      height: int_to_px(current_style.height - move_delta.y)
+    });
+    return false;
+}
+
+// 拖动右上角，根据拖动距离，改变剪裁框大小
+function touch_move_top_right (event, instance) {
+  var touch = event.touches[0];
+  var move_delta = get_move_delta(touch);
+  // console.log('move_delta', JSON.stringify(move_delta));
+  cut_box.setStyle({
+    left: int_to_px(current_style.left),
+    top: int_to_px(current_style.top + move_delta.y),
+    width: int_to_px(current_style.width + move_delta.x),
+    height: int_to_px(current_style.height - move_delta.y)
+  });
+  return false;
+}
+
+// 拖动左下角，根据拖动距离，改变剪裁框大小
+function touch_move_bottom_left (event, instance) {
+  var touch = event.touches[0];
+  var move_delta = get_move_delta(touch);
+  // console.log('move_delta', JSON.stringify(move_delta));
+  cut_box.setStyle({
+    left: int_to_px(current_style.left + move_delta.x),
+    top: int_to_px(current_style.top),
+    width: int_to_px(current_style.width - move_delta.x),
+    height: int_to_px(current_style.height + move_delta.y)
+  });
+  return false;
+}
+
+// 拖动右下角，根据拖动距离，相应的改变剪裁框大小
+function touch_move_bottom_right (event, instance) {
+  var touch = event.touches[0];
+  var move_delta = get_move_delta(touch);
+  // console.log('move_delta', JSON.stringify(move_delta));
+  cut_box.setStyle({
+    top: int_to_px(current_style.top),
+    left: int_to_px(current_style.left),
+    width: int_to_px(current_style.width + move_delta.x),
+    height: int_to_px(current_style.height + move_delta.y)
+  });
+  return false;
+}
+
+// 拖动结束后，对超出图片的剪裁框进行修正
+function touch_end () {
+  var end_style = get_current_style(cut_box);
+  // console.log("end_style", JSON.stringify(end_style));
+  var out_of_bound = false;
+  // 检查横向
+  if (end_style.left < origin_style.left) {
+    var deltaX = origin_style.left - end_style.left;
+    end_style.width = end_style.width - deltaX;
+    end_style.left = origin_style.left;
+    out_of_bound = true;
+  } else if ((end_style.left + end_style.width) > (origin_style.left + origin_style.width)) {
+    end_style.width = origin_style.left + origin_style.width - end_style.left;
+    out_of_bound = true;
+  } 
+  // 检查纵向
+  if (end_style.top < origin_style.top) {
+    var deltaY = origin_style.top - end_style.top;
+    end_style.height = end_style.height - deltaY;
+    end_style.top = origin_style.top;
+    out_of_bound = true;
+  } else if ((end_style.top + end_style.height) > (origin_style.top + origin_style.height)) {
+    end_style.height = origin_style.top + origin_style.height - end_style.top;
+    out_of_bound = true;
+  }
+  // 修正
+  if (out_of_bound) {
+    cut_box.setStyle({
+      top: int_to_px(end_style.top),
+      left: int_to_px(end_style.left),
+      width: int_to_px(end_style.width),
+      height: int_to_px(end_style.height)
+    });
+  }
+  return false;
+}
+
+// 获取拖动距离
+function get_move_delta (touch) {
+  return {
+    x: touch.pageX - start_position.x,
+    y: touch.pageY - start_position.y
+  }
+}
+
+// 将数字格式的样式值转成字符串格式
+function int_to_px (size) {
+  return size.toString() + "px";
+}
+
+// 将字符串格式的样式值转成数字格式
+function px_to_int (px) {
+  var index = px.indexOf("px");
+  return parseInt(px.slice(0, index));
+}
+
+// 获取某个组件当前的尺寸信息
+function get_current_style (element) {
+  var sizes = ['width', 'height', 'top', 'left']; // 与样式相关的属性
+  var style = element.getComputedStyle(sizes);
+  var result = {};
+  sizes.forEach(function (prop) {
+    result[prop] = px_to_int(style[prop]);
+  });
+  return result;
+}
+
+
+module.exports = {
+  touch_start: touch_start,
+  touch_end: touch_end,
+  touch_move_top_left: touch_move_top_left,
+  touch_move_top_right: touch_move_top_right,
+  touch_move_bottom_left: touch_move_bottom_left,
+  touch_move_bottom_right: touch_move_bottom_right,
+  prop_observer: prop_observer
+}
