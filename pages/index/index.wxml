@@ -14,6 +14,7 @@
   </view>
   <!-- <canvas id="cut_img" type="2d"></canvas> -->
   <view class="bottom_tab" style="height: {{bottom_tab_height}}rpx">
+    <button size='default' type="default" bindtap="rotate_image">旋转</button>
     <button size='default' type='primary' bindtap="cut_image">裁剪</button>
   </view>
 </view>

@@ -26,32 +26,30 @@ Page({
       top: 0,
       left: 0
     },
+    props: ['width', 'height', 'left', 'top']
   },
-  draw_img: function () {
+  rotate_image: function () {
     const that = this;
     const images = that.data.images;
     if (images.length === 0) return;
-    wx.createSelectorQuery().select('#cut_img')
-      .fields({ node: true, size: true })
-      .exec(res => {
-        const canvas = res[0].node;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const current_image = images[images.length - 1];
-        canvas.height = current_image.height;
-        canvas.width = current_image.width;
-        const img = canvas.createImage();
-        img.onload = () => {
-          ctx.drawImage(img, current_image.left, current_image.top, current_image.width, current_image.height, 0, 0, canvas.width, canvas.height);
-        }
-        img.src = that.data.img_url;
+    const props = that.data.props;
+    wx.createSelectorQuery().select('#cut_box')
+    .fields({ computedStyle: props })
+    .exec(res => {
+      const images = that.data.images;
+      const current_image = images[images.length - 1];
+      const rotated_image = get_rotated_image (current_image);
+      const new_cut_box_style = get_cut_box_style (rotated_image.height, rotated_image.width, that.data.content_size)
+      that.setData({
+        cut_box_style: new_cut_box_style,
+        images: that.data.images.concat([rotated_image]),
       });
-
+    });
   },
-  // 根据裁剪框尺寸对图片进行裁剪
+  // 根据当前裁剪框尺寸，计算裁剪后的图片尺寸和新的裁剪框尺寸
   cut_image: function () {
     const that = this;
-    const props = ['width', 'height', 'left', 'top'];
+    const props = that.data.props;
     wx.createSelectorQuery().select('#cut_box')
     .fields({ computedStyle: props })
     .exec(res => {
@@ -60,12 +58,36 @@ Page({
       const origin_style = that.data.cut_box_style;
       const images = that.data.images;
       const current_image = images[images.length - 1];
-      const new_image = get_new_image (current_style, origin_style, current_image);
-      const new_cut_box_style = get_cut_box_style (new_image.width, new_image.height, that.data.content_size)
+      const cutted_image = get_cutted_image (current_style, origin_style, current_image);
+      const new_cut_box_style = get_cut_box_style (cutted_image.width, cutted_image.height, that.data.content_size)
       that.setData({
         cut_box_style: new_cut_box_style,
-        images: that.data.images.concat([new_image]),
+        images: that.data.images.concat([cutted_image]),
       });
+    });
+  },
+  draw_img: function () {
+    const that = this;
+    const images = that.data.images;
+    if (images.length === 0) return;
+    wx.createSelectorQuery().select('#cut_img')
+    .fields({ node: true, size: true })
+    .exec(res => {
+      const canvas = res[0].node;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const current_image = images[images.length - 1];
+      canvas.height = current_image.height;
+      canvas.width = current_image.width;
+      const img = canvas.createImage();
+      img.onload = () => {
+        ctx.save();
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(current_image.rotate * Math.PI / 180);
+        ctx.drawImage(img, -current_image.width/2, -current_image.height/2);
+        ctx.restore();
+      }
+      img.src = that.data.img_url;
     });
   },
   onLoad: function () {
@@ -87,6 +109,7 @@ Page({
             height: img.height,
             left: 0,
             top: 0,
+            rotate: 0
           }]
         });
       }
@@ -96,12 +119,24 @@ Page({
 
 
 // 计算裁剪后图片的左上角坐标和宽高
-function get_new_image (current_style, origin_style, current_image) {
+function get_cutted_image (current_style, origin_style, current_image) {
   return {
     width: Math.ceil(current_style.width / origin_style.width * current_image.width),
     height: Math.ceil(current_style.height / origin_style.height  * current_image.height),
     left: Math.ceil((current_style.left - origin_style.left) / origin_style.width * current_image.width + current_image.left),
-    top: Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height + current_image.top)
+    top: Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height + current_image.top),
+    rotate: current_image.rotate
+  }
+}
+
+// 计算旋转后图片的左上角坐标和宽高
+function get_rotated_image (current_image) {
+  return {
+    width: current_image.width,
+    height: current_image.height,
+    top: -Math.ceil(current_image.height / 2),
+    left: -Math.ceil(current_image.width / 2),
+    rotate: current_image.rotate + 90 // 每次固定顺时针旋转90度
   }
 }
 
