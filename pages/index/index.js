@@ -39,7 +39,7 @@ Page({
       const images = that.data.images;
       const current_image = images[images.length - 1];
       const rotated_image = get_rotated_image (current_image);
-      const new_cut_box_style = get_cut_box_style (rotated_image, that.data.content_size)
+      const new_cut_box_style = get_cut_box_style (rotated_image, that.data.content_size);
       that.setData({
         cut_box_style: new_cut_box_style,
         images: that.data.images.concat([rotated_image]),
@@ -59,7 +59,7 @@ Page({
       const images = that.data.images;
       const current_image = images[images.length - 1];
       const cutted_image = get_cutted_image (current_style, origin_style, current_image);
-      const new_cut_box_style = get_cut_box_style (cutted_image, that.data.content_size)
+      const new_cut_box_style = get_cut_box_style (cutted_image, that.data.content_size);
       that.setData({
         cut_box_style: new_cut_box_style,
         images: that.data.images.concat([cutted_image]),
@@ -90,6 +90,18 @@ Page({
         ctx.restore();
       }
       img.src = that.data.img_url;
+    });
+  },
+  undo: function () {
+    const that = this;
+    const images = that.data.images;
+    const images_count = images.length;
+    if (images_count <= 1) return;
+    const previous_image = images[images_count - 2];
+    const previous_cut_box_style = get_cut_box_style (previous_image, that.data.content_size);
+    that.setData({
+      cut_box_style: previous_cut_box_style,
+      images: that.data.images.slice(0, images_count - 1),
     });
   },
   onLoad: function () {
