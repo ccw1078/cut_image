@@ -39,7 +39,7 @@ Page({
       const images = that.data.images;
       const current_image = images[images.length - 1];
       const rotated_image = get_rotated_image (current_image);
-      const new_cut_box_style = get_cut_box_style (rotated_image.height, rotated_image.width, that.data.content_size)
+      const new_cut_box_style = get_cut_box_style (rotated_image, that.data.content_size)
       that.setData({
         cut_box_style: new_cut_box_style,
         images: that.data.images.concat([rotated_image]),
@@ -59,7 +59,7 @@ Page({
       const images = that.data.images;
       const current_image = images[images.length - 1];
       const cutted_image = get_cutted_image (current_style, origin_style, current_image);
-      const new_cut_box_style = get_cut_box_style (cutted_image.width, cutted_image.height, that.data.content_size)
+      const new_cut_box_style = get_cut_box_style (cutted_image, that.data.content_size)
       that.setData({
         cut_box_style: new_cut_box_style,
         images: that.data.images.concat([cutted_image]),
@@ -77,14 +77,16 @@ Page({
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const current_image = images[images.length - 1];
-      canvas.height = current_image.height;
-      canvas.width = current_image.width;
+      // 当旋转角度为90度或270度时，图片的宽高刚好对调
+      const is_rotated = current_image.rotate % 180 === 0;
+      canvas.height = is_rotated ? current_image.height : current_image.width;
+      canvas.width = is_rotated ? current_image.width : current_image.height;
       const img = canvas.createImage();
       img.onload = () => {
         ctx.save();
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.rotate(current_image.rotate * Math.PI / 180);
-        ctx.drawImage(img, -current_image.width/2, -current_image.height/2);
+        ctx.drawImage(img, current_image.left, current_image.top, current_image.width, current_image.height, -current_image.width/2, -current_image.height/2, current_image.width, current_image.height);
         ctx.restore();
       }
       img.src = that.data.img_url;
@@ -98,7 +100,7 @@ Page({
     wx.getImageInfo({
       src: img_urls[img_index],
       success: function(img) {
-        const cut_box_style = get_cut_box_style (img.width, img.height, content_size);
+        const cut_box_style = get_cut_box_style (img, content_size);
         that.setData({
           container_height: container_height,
           content_size: content_size,
@@ -134,8 +136,8 @@ function get_rotated_image (current_image) {
   return {
     width: current_image.width,
     height: current_image.height,
-    top: -Math.ceil(current_image.height / 2),
-    left: -Math.ceil(current_image.width / 2),
+    top: current_image.top,
+    left: current_image.left,
     rotate: current_image.rotate + 90 // 每次固定顺时针旋转90度
   }
 }
@@ -173,10 +175,14 @@ function get_content_size (container_height, content_margin) {
 }
 
 // 计算裁剪框的尺寸
-function get_cut_box_style (img_width, img_height, content_size) {
+function get_cut_box_style (image, content_size) {
   let scale;
-  let px_ratio = app.globalData.px_ratio;
+  const px_ratio = app.globalData.px_ratio;
   let cut_box_style = {};
+  // 当旋转角度为90度或270度时，图片的宽高刚好对调
+  const is_rotated = image.rotate % 180 === 0;
+  const img_width = is_rotated ? image.width : image.height;
+  const img_height = is_rotated ? image.height : image.width;
   if (img_width / img_height >= content_size.width / content_size.height) {
     cut_box_style.width = Math.ceil(content_size.width / px_ratio); 
     scale = content_size.width / img_width;
