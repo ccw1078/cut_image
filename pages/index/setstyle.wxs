@@ -1,17 +1,24 @@
 var cut_box; // 剪裁框
 var start_position; // 拖动时的起始位置
 var current_style = {}; // 剪裁框当前样式
-var raw_style = {}; // 剪裁框初始样式
+var origin_style = {}; // 剪裁框初始样式
+var canvas; // 画布
 
-
-// 监听prop，当改变时，重新设置 cut_box 样式
+// 监听prop属性，当 prop 改变时，更新裁剪框和canvas的样式
 function prop_observer (newValue, oldValue, ownerInstance, instance) {
   if (oldValue === undefined) {
     return;
   }
+  canvas = ownerInstance.selectComponent('#cut_img');
+  canvas.setStyle({
+    width: int_to_px(newValue.width),
+    height: int_to_px(newValue.height)
+  });
+  // 调用逻辑层的 draw_img 方法，重新绘图
+  ownerInstance.callMethod("draw_img");
   cut_box = ownerInstance.selectComponent('#cut_box');
   console.log('newValue', JSON.stringify(newValue));
-  raw_style = newValue;
+  origin_style = newValue;
   cut_box.setStyle({
     left: int_to_px(newValue.left),
     top: int_to_px(newValue.top),
@@ -27,12 +34,7 @@ function touch_start (event, instance) {
     x: touch.pageX,
     y: touch.pageY
   }
-  // console.log('start position', JSON.stringify(start_position));
-  // cut_box = instance.selectComponent('#cut_box');
-  // raw_style = cut_box.getDataset().style;
-  // console.log('raw_style', JSON.stringify(raw_style));
   current_style = get_current_style(cut_box);
-  // console.log('current_style', JSON.stringify(current_style));
 }
 
 // 拖动左上角，根据拖动距离，改变剪裁框大小
@@ -77,7 +79,7 @@ function touch_move_bottom_left (event, instance) {
   return false;
 }
 
-// 拖动右下角，根据拖动距离，改变剪裁框大小
+// 拖动右下角，根据拖动距离，相应的改变剪裁框大小
 function touch_move_bottom_right (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
@@ -97,23 +99,23 @@ function touch_end () {
   // console.log("end_style", JSON.stringify(end_style));
   var out_of_bound = false;
   // 检查横向
-  if (end_style.left < raw_style.left) {
-    var deltaX = raw_style.left - end_style.left;
+  if (end_style.left < origin_style.left) {
+    var deltaX = origin_style.left - end_style.left;
     end_style.width = end_style.width - deltaX;
-    end_style.left = raw_style.left;
+    end_style.left = origin_style.left;
     out_of_bound = true;
-  } else if ((end_style.left + end_style.width) > (raw_style.left + raw_style.width)) {
-    end_style.width = raw_style.left + raw_style.width - end_style.left;
+  } else if ((end_style.left + end_style.width) > (origin_style.left + origin_style.width)) {
+    end_style.width = origin_style.left + origin_style.width - end_style.left;
     out_of_bound = true;
   } 
   // 检查纵向
-  if (end_style.top < raw_style.top) {
-    var deltaY = raw_style.top - end_style.top;
+  if (end_style.top < origin_style.top) {
+    var deltaY = origin_style.top - end_style.top;
     end_style.height = end_style.height - deltaY;
-    end_style.top = raw_style.top;
+    end_style.top = origin_style.top;
     out_of_bound = true;
-  } else if ((end_style.top + end_style.height) > (raw_style.top + raw_style.height)) {
-    end_style.height = raw_style.top + raw_style.height - end_style.top;
+  } else if ((end_style.top + end_style.height) > (origin_style.top + origin_style.height)) {
+    end_style.height = origin_style.top + origin_style.height - end_style.top;
     out_of_bound = true;
   }
   // 修正
@@ -147,7 +149,7 @@ function px_to_int (px) {
   return parseInt(px.slice(0, index));
 }
 
-// 获取组件当前的CSS样式
+// 获取某个组件当前的尺寸信息
 function get_current_style (element) {
   var sizes = ['width', 'height', 'top', 'left']; // 与样式相关的属性
   var style = element.getComputedStyle(sizes);

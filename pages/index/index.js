@@ -20,79 +20,51 @@ Page({
       height: 0
     },
     images: [],
-    img_mode: 'aspectFit',
     cut_box_style: {
       height: 0,
       width: 0,
       top: 0,
       left: 0
     },
-    canvas_id: 'cut_img',
   },
-  // 根据裁剪框尺寸对图片进行裁剪
-  cut_image: function () {
-    // const that = this;
-    // that.setData({
-    //   images: that.data.images.concat([{
-    //     url: 'https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110101924.png',
-    //     width: 108,
-    //     height: 127,
-    //     path: 'http://tmp/wx59defcf3a2884e98.o6zAJs8qVRlwlCZBkHkOxCGSZSJE.Muyz0DXAl04x84f849834b52d84aa5f5684234843abf.png',
-    //     type: 'png'
-    //   }]),
-    //   cut_box_style: {
-    //     height: 394,
-    //     width: 335,
-    //     top: 55,
-    //     left: 0
-    //   }
-    // });
+  draw_img: function () {
     const that = this;
-    const props = ['width', 'height', 'left', 'top'];
-    wx.createSelectorQuery().select('#cut_box')
-    .fields({ computedStyle: props })
-    .exec((res) => {
-      // console.log('res', JSON.stringify(res));
-      const cut_box_node = res[0];
-      const current_style = convert_style_to_int(cut_box_node, props);
-      const origin_style = that.data.cut_box_style;
-      wx.createSelectorQuery().select('#cut_img')
+    const images = that.data.images;
+    if (images.length === 0) return;
+    wx.createSelectorQuery().select('#cut_img')
       .fields({ node: true, size: true })
       .exec(res => {
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
-        const current_image = that.data.images[0];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const current_image = images[images.length - 1];
         canvas.height = current_image.height;
         canvas.width = current_image.width;
-
         const img = canvas.createImage();
         img.onload = () => {
-          const sx = Math.ceil((current_style.left - origin_style.left) / origin_style.width * current_image.width);
-          const sy = Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height);
-          const sWidth = Math.ceil(current_style.width / origin_style.width * current_image.width);
-          const sHeight = Math.ceil(current_style.height / origin_style.height  * current_image.height);
-          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
-          wx.canvasToTempFilePath({
-            width: sWidth,
-            height: sHeight,
-            canvas: canvas,
-            success: function (res) {
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              const cut_box_style = get_cut_box_style (sWidth, sHeight, that.data.content_size)
-              that.setData({
-                cut_box_style: cut_box_style,
-                images: that.data.images.concat([{
-                  url: res.tempFilePath,
-                  width: sWidth,
-                  height: sHeight,
-                  path: res.tempFilePath,
-                  type: 'png'
-                }]),
-              });
-            }
-          });
+          ctx.drawImage(img, current_image.left, current_image.top, current_image.width, current_image.height, 0, 0, canvas.width, canvas.height);
         }
-        img.src = that.data.images[0].url;
+        img.src = that.data.img_url;
+      });
+
+  },
+  // 根据裁剪框尺寸对图片进行裁剪
+  cut_image: function () {
+    const that = this;
+    const props = ['width', 'height', 'left', 'top'];
+    wx.createSelectorQuery().select('#cut_box')
+    .fields({ computedStyle: props })
+    .exec(res => {
+      const cut_box_node = res[0];
+      const current_style = convert_style_to_int(cut_box_node, props);
+      const origin_style = that.data.cut_box_style;
+      const images = that.data.images;
+      const current_image = images[images.length - 1];
+      const new_image = get_new_image (current_style, origin_style, current_image);
+      const new_cut_box_style = get_cut_box_style (new_image.width, new_image.height, that.data.content_size)
+      that.setData({
+        cut_box_style: new_cut_box_style,
+        images: that.data.images.concat([new_image]),
       });
     });
   },
@@ -100,21 +72,21 @@ Page({
     const that = this;
     const container_height = get_container_height (that.data.bottom_tab_height);
     const content_size = get_content_size (container_height, that.data.content_margin);
+    const img_index = 1;
     wx.getImageInfo({
-      src: img_urls[1],
-      success: function(result) {
-        // console.log('get image info', JSON.stringify(result));
-        const cut_box_style = get_cut_box_style (result.width, result.height, content_size);
+      src: img_urls[img_index],
+      success: function(img) {
+        const cut_box_style = get_cut_box_style (img.width, img.height, content_size);
         that.setData({
           container_height: container_height,
           content_size: content_size,
           cut_box_style: cut_box_style,
+          img_url: img_urls[img_index],
           images: [{
-            url: img_urls[1],
-            width: result.width,
-            height: result.height,
-            path: result.path,
-            type: result.type
+            width: img.width,
+            height: img.height,
+            left: 0,
+            top: 0,
           }]
         });
       }
@@ -122,6 +94,16 @@ Page({
   }
 });
 
+
+// 计算裁剪后图片的左上角坐标和宽高
+function get_new_image (current_style, origin_style, current_image) {
+  return {
+    width: Math.ceil(current_style.width / origin_style.width * current_image.width),
+    height: Math.ceil(current_style.height / origin_style.height  * current_image.height),
+    left: Math.ceil((current_style.left - origin_style.left) / origin_style.width * current_image.width + current_image.left),
+    top: Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height + current_image.top)
+  }
+}
 
 // 将字符串格式的样式值转成数字格式
 function px_to_int (string_value) {
@@ -155,7 +137,7 @@ function get_content_size (container_height, content_margin) {
   }
 }
 
-// 获取裁剪框初始尺寸
+// 计算裁剪框的尺寸
 function get_cut_box_style (img_width, img_height, content_size) {
   let scale;
   let px_ratio = app.globalData.px_ratio;
