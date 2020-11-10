@@ -122,13 +122,37 @@ Page({
 
 // 计算裁剪后图片的左上角坐标和宽高
 function get_cutted_image (current_style, origin_style, current_image) {
-  return {
-    width: Math.ceil(current_style.width / origin_style.width * current_image.width),
-    height: Math.ceil(current_style.height / origin_style.height  * current_image.height),
-    left: Math.ceil((current_style.left - origin_style.left) / origin_style.width * current_image.width + current_image.left),
-    top: Math.ceil((current_style.top - origin_style.top) / origin_style.height * current_image.height + current_image.top),
+  const horiz_ratio = current_style.width / origin_style.width; // 水平宽度变化占比
+  const vert_ratio = current_style.height / origin_style.height; // 垂直高度变化占比
+  const left_ratio = (current_style.left - origin_style.left) / origin_style.width; // x轴坐标变化占比
+  const top_ratio = (current_style.top - origin_style.top) / origin_style.height; // y轴坐标变化占比
+  let result = {
     rotate: current_image.rotate
+  };
+  if (current_image.rotate === 0) {
+    result.width = Math.ceil(current_image.width * horiz_ratio);
+    result.height = Math.ceil(current_image.height * vert_ratio);
+    result.left = Math.ceil(current_image.left + current_image.width * left_ratio);
+    result.top = Math.ceil(current_image.top + current_image.height * top_ratio );
+  } else if (current_image.rotate === 90) {
+    result.width = Math.ceil(current_image.width * vert_ratio);
+    result.height = Math.ceil(current_image.height * horiz_ratio);
+    result.left = Math.ceil(current_image.left + top_ratio * current_image.width);
+    result.top = Math.ceil(current_image.top + current_image.height * (1 - horiz_ratio - left_ratio));
+  } else if (current_image.rotate === 180) {
+    result.left = Math.ceil(current_image.left + current_image.width * (1 - horiz_ratio - left_ratio));
+    result.top = Math.ceil(current_image.top + current_image.height * (1 - vert_ratio - top_ratio));
+    result.width = Math.ceil(current_image.width * horiz_ratio);
+    result.height = Math.ceil(current_image.height * vert_ratio);
+  } else if (current_image.rotate === 270) {
+    result.left = Math.ceil(current_image.left + current_image.width * (1 - vert_ratio - top_ratio));
+    result.top = Math.ceil(current_image.top + current_image.height * left_ratio);
+    result.width = Math.ceil(current_image.width * vert_ratio);
+    result.height = Math.ceil(current_image.height * horiz_ratio);
+  } else {
+    throw("Invalid image rotate value, it should be 0, 90, 180 or 270.")
   }
+  return result;
 }
 
 // 计算旋转后图片的左上角坐标和宽高
@@ -138,7 +162,7 @@ function get_rotated_image (current_image) {
     height: current_image.height,
     top: current_image.top,
     left: current_image.left,
-    rotate: current_image.rotate + 90 // 每次固定顺时针旋转90度
+    rotate: (current_image.rotate + 90) % 360 // 每次固定旋转90度，旋到360度时归零
   }
 }
 
