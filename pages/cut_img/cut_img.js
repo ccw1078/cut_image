@@ -141,31 +141,36 @@ Page({
   },
   onLoad: function () {
     const that = this;
-    const container_height = get_container_height (that.data.bottom_tab_height);
-    const content_size = get_content_size (container_height, that.data.content_margin);
-    const img_index = 4;
-    wx.getImageInfo({
-      src: img_urls[img_index],
-      success: function(img) {
-        const image = {
-          width: img.width,
-          height: img.height,
-          left: 0,
-          top: 0,
-          rotate: 0,
-          url: img_urls[img_index]
+    const eventChannel = that.getOpenerEventChannel();
+    eventChannel.on('cut_img', function (data) {
+      // console.log("data", data);
+      const img_url = data.path;
+      const container_height = get_container_height (that.data.bottom_tab_height);
+      const content_size = get_content_size (container_height, that.data.content_margin);
+      wx.getImageInfo({
+        src: img_url,
+        success: function(img) {
+          const image = {
+            width: img.width,
+            height: img.height,
+            left: 0,
+            top: 0,
+            rotate: 0
+          }
+          const cut_box_style = get_cut_box_style (image, content_size);
+          that.setData({
+            container_height: container_height,
+            content_size: content_size,
+            cut_box_style: cut_box_style,
+            origin_canvas_style: cut_box_style,
+            img_url: img_url,
+            images: [image]
+          });
         }
-        const cut_box_style = get_cut_box_style (image, content_size);
-        that.setData({
-          container_height: container_height,
-          content_size: content_size,
-          cut_box_style: cut_box_style,
-          origin_canvas_style: cut_box_style,
-          img_url: img_urls[img_index],
-          images: [image]
-        });
-      }
+      });
     });
+
+    
   }
 });
 

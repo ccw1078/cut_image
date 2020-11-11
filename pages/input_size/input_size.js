@@ -40,10 +40,7 @@ Page({
     const eventChannel = that.getOpenerEventChannel();
     eventChannel.on('input_size', function (data) {
       that.setData({
-        img_info: data,
-        success: function (res) {
-          console.log('set data done');
-        }
+        img_info: data
       });
       that.draw_img();
     });
