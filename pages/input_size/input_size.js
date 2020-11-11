@@ -10,7 +10,9 @@ const img_urls = [
 
 Page({
   data: {
-    img_info: {}
+    img_info: {},
+    width: undefined,
+    height: undefined
   },
   draw_img: function () {
     const that = this;
@@ -35,6 +37,30 @@ Page({
       img.src = img_info.origin.url;
     });
   },
+  input_width: function (e) {
+    // console.log('e.detail', JSON.stringify(e.detail));
+    const that = this;
+    if (that.data.height) {
+      const width = parseInt(e.detail.value);
+      const cutted_width = that.data.img_info.cutted.width;
+      const cutted_height = that.data.img_info.cutted.height;
+      that.setData({
+        height: Math.round(cutted_height / cutted_width * width)
+      });
+    }
+  },
+  input_height: function (e) {
+    // console.log('e.detail', JSON.stringify(e.detail));
+    const that = this;
+    if (!that.data.width) {
+      const height = parseInt(e.detail.value);
+      const cutted_width = that.data.img_info.cutted.width;
+      const cutted_height = that.data.img_info.cutted.height;
+      that.setData({
+        width: Math.round(cutted_width / cutted_height * height)
+      });
+    }
+  },
   onLoad: function (options) {
     const that = this;
     const eventChannel = that.getOpenerEventChannel();
@@ -44,6 +70,5 @@ Page({
       });
       that.draw_img();
     });
-  },
-
+  }
 })

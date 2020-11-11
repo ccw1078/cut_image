@@ -8,18 +8,18 @@
     <view class="weui-cells weui-cells_after-title">
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
-          <view class="weui-label">宽度</view>
+          <view class="weui-label">宽度(毫米):</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入宽度" />
+          <input bindblur="input_width" value="{{width}}" class="weui-input" placeholder="请输入宽度" />
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
         <view class="weui-cell__hd">
-          <view class="weui-label">高度</view>
+          <view class="weui-label">高度(毫米):</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" placeholder="请输入高度" />
+          <input bindblur="input_height" value="{{height}}" class="weui-input" placeholder="请输入高度" />
         </view>
       </view>
     </view>
