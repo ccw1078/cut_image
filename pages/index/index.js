@@ -1,6 +1,5 @@
 // pages/index.js
 Page({
-
   data: {
     img: {
       path: undefined

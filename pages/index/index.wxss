@@ -2,17 +2,14 @@
 .content {
   width: 100vw;
   height: 640rpx;
-  /* background-color: yellow; */
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding: 32rpx; */
 }
 
 .img {
   width: 90%;
   height: 90%;
-  /* background-color: #ccc; */
 }
 
 .bottom_tab {
@@ -21,5 +18,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: blue; */
 }

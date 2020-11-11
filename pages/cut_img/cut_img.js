@@ -1,14 +1,6 @@
 //index.js
 //获取应用实例
 const app = getApp()
-const img_urls = [
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110101924.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910085532.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20200910091535.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201107180151.png",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201109191756.jpg",
-  "https://lhwccw.oss-cn-shenzhen.aliyuncs.com/20201110110506.jpg"
-];
 
 Page({
   data: {

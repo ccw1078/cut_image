@@ -9,14 +9,12 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  /* background-color: black; */
   padding: 40rpx;
 } 
 
 .content {
   height: 100%;
   width: 100%;
-  /* background-color: yellow; */
   position: relative;
   display: flex;
   align-items: center;
@@ -27,7 +25,6 @@
 #cut_box {
   z-index: 5;
   border: 1px solid red;
-  /* background-color: green; */
   position: absolute;
 }
 
@@ -65,7 +62,6 @@
 
 
 .corner_block {
-  /* background-color: yellow; */
   width: 80rpx;
   height: 80rpx;
 }
@@ -73,7 +69,6 @@
 
 .bottom_tab {
   width: 100vw;
-  /* background-color: black; */
   position: absolute;
   bottom: 0;
   display: flex;
