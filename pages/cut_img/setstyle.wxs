@@ -5,11 +5,9 @@ var origin_style = {}; // 剪裁框初始样式
 var canvas; // 画布
 var corner_block_style; // 角框，用于控制裁剪框的大小
 
-// 监听prop属性，当 prop 改变时，更新裁剪框和canvas的样式
+// 监听prop属性，当 prop 改变时，获取裁剪框、canvas、角框等元素的样式
 function prop_observer (newValue, oldValue, ownerInstance, instance) {
-  if (oldValue === undefined) {
-    return;
-  }
+  if (oldValue === undefined) return;
   canvas = ownerInstance.selectComponent('#cut_img');
   canvas.setStyle({
     width: int_to_px(newValue.width),
@@ -18,7 +16,6 @@ function prop_observer (newValue, oldValue, ownerInstance, instance) {
   // 调用逻辑层的 draw_img 方法，重新绘图
   ownerInstance.callMethod("draw_img");
   cut_box = ownerInstance.selectComponent('#cut_box');
-  // console.log('newValue', JSON.stringify(newValue));
   origin_style = newValue;
   cut_box.setStyle({
     left: int_to_px(newValue.left),
@@ -27,7 +24,6 @@ function prop_observer (newValue, oldValue, ownerInstance, instance) {
     height: int_to_px(newValue.height)
   });
   corner_block_style =  get_current_style(ownerInstance.selectComponent('.corner_block'));
-  // console.log("corner_block_style", JSON.stringify(corner_block_style));
 }
 
 // 获取拖动开始时的初始数据
@@ -44,7 +40,6 @@ function touch_start (event, instance) {
 function touch_move_top_left (event, instance) {
     var touch = event.touches[0];
     var move_delta = get_move_delta(touch);
-    // console.log('move_delta', JSON.stringify(move_delta));
     cut_box.setStyle({
       left: int_to_px(current_style.left + move_delta.x),
       top: int_to_px(current_style.top + move_delta.y),
@@ -58,7 +53,6 @@ function touch_move_top_left (event, instance) {
 function touch_move_top_right (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     left: int_to_px(current_style.left),
     top: int_to_px(current_style.top + move_delta.y),
@@ -72,7 +66,6 @@ function touch_move_top_right (event, instance) {
 function touch_move_bottom_left (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     left: int_to_px(current_style.left + move_delta.x),
     top: int_to_px(current_style.top),
@@ -86,7 +79,6 @@ function touch_move_bottom_left (event, instance) {
 function touch_move_bottom_right (event, instance) {
   var touch = event.touches[0];
   var move_delta = get_move_delta(touch);
-  // console.log('move_delta', JSON.stringify(move_delta));
   cut_box.setStyle({
     top: int_to_px(current_style.top),
     left: int_to_px(current_style.left),
@@ -99,7 +91,6 @@ function touch_move_bottom_right (event, instance) {
 // 拖动结束后，对超出图片的剪裁框进行修正
 function touch_end () {
   var end_style = get_current_style(cut_box);
-  // console.log("end_style", JSON.stringify(end_style));
   var out_of_bound = false;
   // 检查横向过大
   var max_left = origin_style.left + origin_style.width;
@@ -142,9 +133,6 @@ function touch_end () {
     }
     out_of_bound = true;
   }
-  // 检查最小尺寸时，是否超出界限
-  
-
   // 修正
   if (out_of_bound) {
     cut_box.setStyle({
