@@ -107,7 +107,9 @@ Page({
                 title: '保存成功',
                 mask: true,
                 success: function (res) {
-                  that.navigate_to(result);
+                  setTimeout(() => {
+                    that.navigate_to(result);
+                  }, 1000);
                 }
               })
             }
