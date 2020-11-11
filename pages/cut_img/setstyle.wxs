@@ -18,7 +18,7 @@ function prop_observer (newValue, oldValue, ownerInstance, instance) {
   // 调用逻辑层的 draw_img 方法，重新绘图
   ownerInstance.callMethod("draw_img");
   cut_box = ownerInstance.selectComponent('#cut_box');
-  console.log('newValue', JSON.stringify(newValue));
+  // console.log('newValue', JSON.stringify(newValue));
   origin_style = newValue;
   cut_box.setStyle({
     left: int_to_px(newValue.left),
@@ -27,7 +27,7 @@ function prop_observer (newValue, oldValue, ownerInstance, instance) {
     height: int_to_px(newValue.height)
   });
   corner_block_style =  get_current_style(ownerInstance.selectComponent('.corner_block'));
-  console.log("corner_block_style", JSON.stringify(corner_block_style));
+  // console.log("corner_block_style", JSON.stringify(corner_block_style));
 }
 
 // 获取拖动开始时的初始数据
@@ -99,7 +99,7 @@ function touch_move_bottom_right (event, instance) {
 // 拖动结束后，对超出图片的剪裁框进行修正
 function touch_end () {
   var end_style = get_current_style(cut_box);
-  console.log("end_style", JSON.stringify(end_style));
+  // console.log("end_style", JSON.stringify(end_style));
   var out_of_bound = false;
   // 检查横向过大
   var max_left = origin_style.left + origin_style.width;

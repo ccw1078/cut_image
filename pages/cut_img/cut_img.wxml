@@ -12,7 +12,6 @@
       </view>
     </view>
   </view>
-  <!-- <canvas id="cut_img" type="2d"></canvas> -->
   <view class="bottom_tab" style="height: {{bottom_tab_height}}rpx">
     <button size='mini' type="default" bindtap="undo" disabled="{{images.length <= 1}}">撤销</button>
     <button size='mini' type="default" bindtap="rotate_image">旋转</button>
