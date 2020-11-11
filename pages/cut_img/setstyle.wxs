@@ -3,6 +3,7 @@ var start_position; // 拖动时的起始位置
 var current_style = {}; // 剪裁框当前样式
 var origin_style = {}; // 剪裁框初始样式
 var canvas; // 画布
+var corner_block_style; // 角框，用于控制裁剪框的大小
 
 // 监听prop属性，当 prop 改变时，更新裁剪框和canvas的样式
 function prop_observer (newValue, oldValue, ownerInstance, instance) {
@@ -25,6 +26,8 @@ function prop_observer (newValue, oldValue, ownerInstance, instance) {
     width: int_to_px(newValue.width),
     height: int_to_px(newValue.height)
   });
+  corner_block_style =  get_current_style(ownerInstance.selectComponent('.corner_block'));
+  console.log("corner_block_style", JSON.stringify(corner_block_style));
 }
 
 // 获取拖动开始时的初始数据
@@ -96,28 +99,52 @@ function touch_move_bottom_right (event, instance) {
 // 拖动结束后，对超出图片的剪裁框进行修正
 function touch_end () {
   var end_style = get_current_style(cut_box);
-  // console.log("end_style", JSON.stringify(end_style));
+  console.log("end_style", JSON.stringify(end_style));
   var out_of_bound = false;
-  // 检查横向
+  // 检查横向过大
+  var max_left = origin_style.left + origin_style.width;
   if (end_style.left < origin_style.left) {
     var deltaX = origin_style.left - end_style.left;
     end_style.width = end_style.width - deltaX;
     end_style.left = origin_style.left;
     out_of_bound = true;
-  } else if ((end_style.left + end_style.width) > (origin_style.left + origin_style.width)) {
-    end_style.width = origin_style.left + origin_style.width - end_style.left;
+  } else if ((end_style.left + end_style.width) > max_left) {
+    end_style.width = max_left - end_style.left;
     out_of_bound = true;
   } 
-  // 检查纵向
+  // 检查纵向过大
+  var max_top = origin_style.top + origin_style.height;
   if (end_style.top < origin_style.top) {
     var deltaY = origin_style.top - end_style.top;
     end_style.height = end_style.height - deltaY;
     end_style.top = origin_style.top;
     out_of_bound = true;
-  } else if ((end_style.top + end_style.height) > (origin_style.top + origin_style.height)) {
-    end_style.height = origin_style.top + origin_style.height - end_style.top;
+  } else if ((end_style.top + end_style.height) > max_top) {
+    end_style.height = max_top - end_style.top;
     out_of_bound = true;
   }
+  // 检查宽度过小，不得小于边角框的2倍，不然角框会重叠在一起
+  var min_width = corner_block_style.width * 2;
+  console.log("min_width", min_width);
+  if (end_style.width < min_width) {
+    end_style.width = min_width;
+    if (end_style.left + end_style.width > max_left) {
+      end_style.left = max_left - end_style.width;
+    }
+    out_of_bound = true;
+  }
+  // 检查高度过小，不得小于边角框的2倍，不然角框会重叠在一起
+  var min_height = corner_block_style.height * 2;
+  if (end_style.height < min_height) {
+    end_style.height = min_height;
+    if (end_style.top + end_style.height > max_top) {
+      end_style.top = max_top - end_style.height;
+    }
+    out_of_bound = true;
+  }
+  // 检查最小尺寸时，是否超出界限
+  
+
   // 修正
   if (out_of_bound) {
     cut_box.setStyle({
@@ -145,6 +172,7 @@ function int_to_px (size) {
 
 // 将字符串格式的样式值转成数字格式
 function px_to_int (px) {
+  if (!px) return 0;
   var index = px.indexOf("px");
   return parseInt(px.slice(0, index));
 }
