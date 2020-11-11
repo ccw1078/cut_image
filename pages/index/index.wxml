@@ -1,6 +1,6 @@
 <!--pages/index.wxml-->
 <view class="content">
-  <image wx:if="{{img.path}}" src="{{img.path}}" class="img" mode="aspectFit"></image>
+  <image wx:if="{{img.path}}" src="{{img.path}}" class="img" mode="aspectFit" bindtap="add_img"></image>
   <view wx:else>
     <button type="primary" size="default" bindtap="add_img">添加图片</button>
   </view>
