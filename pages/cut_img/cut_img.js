@@ -100,29 +100,14 @@ Page({
       wx.showLoading({ title: '正在保存中', mask: true });
       wx.canvasToTempFilePath({
         canvas: canvas,
-        success: function (res) {
-          const images = that.data.images;
-          const count = images.length;
-          const cutted_img = images[count - 1];
-          cutted_img.url = res.tempFilePath;
+        success: function (result) {
           wx.hideLoading({
             success: res => {
               wx.showToast({
                 title: '保存成功',
                 mask: true,
                 success: function (res) {
-                  const origin_img = images[0];
-                  origin_img.url = that.data.img_url;
-                  wx.navigateTo({
-                    url: '../input_size/input_size',
-                    success: function (res) {
-                      res.eventChannel.emit('input_size', {
-                        cutted: cutted_img,
-                        origin: origin_img,
-                        canvas: that.data.origin_canvas_style
-                      });
-                    }
-                  })
+                  that.navigate_to(result);
                 }
               })
             }
@@ -130,6 +115,25 @@ Page({
         }
       });
     });
+  },
+  navigate_to: function (res) {
+    const that = this;
+    const images = that.data.images;
+    const count = images.length;
+    const cutted_img = images[count - 1];
+    cutted_img.url = res.tempFilePath;
+    const origin_img = images[0];
+    origin_img.url = that.data.img_url;
+    wx.navigateTo({
+      url: '../input_size/input_size',
+      success: function (res) {
+        res.eventChannel.emit('input_size', {
+          cutted: cutted_img,
+          origin: origin_img,
+          canvas: that.data.origin_canvas_style
+        });
+      }
+    })
   },
   onLoad: function () {
     const that = this;
