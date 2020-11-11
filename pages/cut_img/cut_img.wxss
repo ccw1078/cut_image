@@ -1,5 +1,6 @@
 /**index.wxss**/
 .cut_page {
+  height: 100vh;
   background-color: black;
 }
 
