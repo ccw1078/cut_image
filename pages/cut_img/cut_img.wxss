@@ -1,0 +1,77 @@
+/**index.wxss**/
+.cut_page {
+  background-color: black;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 40rpx;
+} 
+
+.content {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#cut_box {
+  z-index: 5;
+  border: 1px solid red;
+  position: absolute;
+}
+
+#corner_top_left {
+  border-top: 2px solid red;
+  border-left: 2px solid red;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#corner_top_right {
+  border-top: 2px solid red;
+  border-right: 2px solid red;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#corner_bottom_right {
+  border-bottom: 2px solid red;
+  border-right: 2px solid red;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#corner_bottom_left {
+  border-bottom: 2px solid red;
+  border-left: 2px solid red;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+
+.corner_block {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+
+.bottom_tab {
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

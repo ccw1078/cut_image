@@ -1,20 +1,10 @@
-<!--index.wxml-->
-<wxs module="setstyle" src="./setstyle.wxs"></wxs>
-<view class="page">
-  <view class="container" style="height: {{container_height}}rpx">
-    <view class="content" style="height:{{content_size.height}}rpx; width: {{content_size.width}}rpx">
-      <canvas id="cut_img" type="2d"></canvas>
-      <view id="cut_box" prop="{{cut_box_style}}" change:prop="{{setstyle.prop_observer}}">
-          <view id="corner_top_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
-          <view id="corner_top_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_top_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
-          <view id="corner_bottom_left" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_left}}" bindtouchend="{{setstyle.touch_end}}"></view>
-          <view id="corner_bottom_right" class="corner_block" bindtouchstart="{{setstyle.touch_start}}" bindtouchmove="{{setstyle.touch_move_bottom_right}}" bindtouchend="{{setstyle.touch_end}}"></view>
-      </view>
-    </view>
-  </view>
-  <!-- <canvas id="cut_img" type="2d"></canvas> -->
-  <view class="bottom_tab" style="height: {{bottom_tab_height}}rpx">
-    <button size='default' type='primary' bindtap="cut_image">裁剪</button>
+<!--pages/index.wxml-->
+<view class="content">
+  <image wx:if="{{img.path}}" src="{{img.path}}" class="img" mode="aspectFit"></image>
+  <view wx:else>
+    <button type="primary" size="default" bindtap="add_img">添加图片</button>
   </view>
 </view>
-
+<view class="bottom_tab">
+  <button type="primary" size="default" disabled="{{!img.path}}" bindtap="start_cut">开始裁剪</button>
+</view>

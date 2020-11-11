@@ -1,0 +1,35 @@
+<!--pages/input_cut_size/input_cut_size.wxml-->
+<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
+  <view class="page__bd">
+    <view class="image_box">
+      <image src="{{img_info.cutted.url}}" mode="aspectFit"/>
+    </view>
+    <view class="weui-cells__title">请输入裁剪后的图片尺寸</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">宽度(毫米):</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input bindblur="input_width" value="{{width}}" class="weui-input" placeholder="请输入宽度" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">高度(毫米):</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input bindblur="input_height" value="{{height}}" class="weui-input" placeholder="请输入高度" />
+        </view>
+      </view>
+    </view>
+    <view class="weui-cells__tips">请参考下面裁剪位置的示意图</view>
+  </view>
+  <view class="canvas">
+    <canvas type="2d" id="canvas" style="height:{{img_info.canvas.height}}px; width:{{img_info.canvas.width}}px"></canvas>
+  </view>
+  <view class="bottom_tab">
+    <button size="default" type="default" bindtap="save">取消</button>
+    <button size="default" type="primary" bindtap="save">保存</button>
+  </view>
+</view>

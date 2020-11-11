@@ -1,0 +1,23 @@
+/* pages/input_cut_size/input_cut_size.wxss */
+.image_box {
+  margin-top: 20rpx;
+  height: 480rpx;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.canvas {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.bottom_tab {
+  height: 160rpx;
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
