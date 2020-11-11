@@ -31,7 +31,7 @@ Page({
   input_width: function (e) {
     // console.log('e.detail', JSON.stringify(e.detail));
     const that = this;
-    if (that.data.height) {
+    if (!that.data.height) {
       const width = parseInt(e.detail.value);
       const cutted_width = that.data.img_info.cutted.width;
       const cutted_height = that.data.img_info.cutted.height;
