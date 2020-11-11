@@ -1,86 +1,25 @@
-/**index.wxss**/
-.container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  /* background-color: black; */
-  padding: 40rpx;
-} 
-
+/* pages/index.wxss */
 .content {
-  height: 100%;
-  width: 100%;
+  width: 100vw;
+  height: 640rpx;
   /* background-color: yellow; */
-  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  /* padding: 32rpx; */
 }
 
-/* #img {
-  height: 100%;
-  width: 100%;
-} */
-/* 
-#cut_img {
-  background-color: yellow;
-} */
-
-#cut_box {
-  z-index: 5;
-  border: 1px solid red;
-  /* background-color: green; */
-  position: absolute;
+.img {
+  width: 90%;
+  height: 90%;
+  background-color: #ccc;
 }
-
-#corner_top_left {
-  border-top: 2px solid red;
-  border-left: 2px solid red;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-#corner_top_right {
-  border-top: 2px solid red;
-  border-right: 2px solid red;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-#corner_bottom_right {
-  border-bottom: 2px solid red;
-  border-right: 2px solid red;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
-#corner_bottom_left {
-  border-bottom: 2px solid red;
-  border-left: 2px solid red;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-
-
-.corner_block {
-  /* background-color: yellow; */
-  width: 80rpx;
-  height: 80rpx;
-}
-
 
 .bottom_tab {
   width: 100vw;
-  /* background-color: black; */
-  position: absolute;
-  bottom: 0;
+  height: 120rpx;
   display: flex;
   justify-content: center;
   align-items: center;
+  /* background-color: blue; */
 }
