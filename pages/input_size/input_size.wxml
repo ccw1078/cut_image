@@ -29,7 +29,7 @@
     <canvas type="2d" id="canvas" style="height:{{img_info.canvas.height}}px; width:{{img_info.canvas.width}}px"></canvas>
   </view>
   <view class="bottom_tab">
-    <button size="default" type="default" bindtap="save">取消</button>
+    <button size="default" type="default" bindtap="cancel">取消</button>
     <button size="default" type="primary" bindtap="save">保存</button>
   </view>
 </view>

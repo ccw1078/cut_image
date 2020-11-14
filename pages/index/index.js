@@ -1,9 +1,7 @@
 // pages/index.js
 Page({
   data: {
-    img: {
-      path: undefined
-    }
+    img_path: undefined
   },
   add_img: function () {
     const that = this;
@@ -12,10 +10,10 @@ Page({
       success: function (res) {
         // console.log("add img res", JSON.stringify(res));
         that.setData({
-          'img.path': res.tempFilePaths[0]
+          'img_path': res.tempFilePaths[0]
         })
       }
-    })
+    });
   },
   start_cut: function () {
     const that = this;
@@ -23,7 +21,7 @@ Page({
       url: '../cut_img/cut_img',
       success: function (res) {
         res.eventChannel.emit("cut_img", {
-          path: that.data.img.path
+          path: that.data.img_path
         });
       }
     })

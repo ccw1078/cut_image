@@ -1,10 +1,10 @@
 <!--pages/index.wxml-->
 <view class="content">
-  <image wx:if="{{img.path}}" src="{{img.path}}" class="img" mode="aspectFit" bindtap="add_img"></image>
+  <image wx:if="{{img_path}}" src="{{img_path}}" class="img" mode="aspectFit" bindtap="add_img"></image>
   <view wx:else>
     <button type="primary" size="default" bindtap="add_img">添加图片</button>
   </view>
 </view>
 <view class="bottom_tab">
-  <button type="primary" size="default" disabled="{{!img.path}}" bindtap="start_cut">开始裁剪</button>
+  <button type="primary" size="default" disabled="{{!img_path}}" bindtap="start_cut">开始裁剪</button>
 </view>

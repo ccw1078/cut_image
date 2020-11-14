@@ -52,6 +52,21 @@ Page({
       });
     }
   },
+  cancel: function () {
+    wx.navigateBack({
+      delta: 1,
+    });
+  },
+  save: function () {
+    const that = this;
+    const pages = getCurrentPages();
+    const index_page = pages[0];
+    index_page.setData({
+      img_path: that.data.img_info.cutted.url
+    }, function () {
+      wx.navigateBack({ delta: 2 });
+    });
+  },
   onLoad: function (options) {
     const that = this;
     const eventChannel = that.getOpenerEventChannel();

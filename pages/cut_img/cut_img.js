@@ -109,7 +109,7 @@ Page({
                 success: function (res) {
                   setTimeout(() => {
                     that.navigate_to(result);
-                  }, 1000);
+                  }, 500);
                 }
               })
             }
