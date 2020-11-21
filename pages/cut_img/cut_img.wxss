@@ -68,6 +68,52 @@
 }
 
 
+.horiz_side_block {
+  height: 80rpx;
+  width: calc(100% - 160rpx);
+}
+
+.vert_side_block {
+  width: 80rpx;
+  height: calc(100% - 160rpx);
+}
+
+#side_block_top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%)
+}
+
+#side_block_bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%)
+}
+
+#side_block_left {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%)
+}
+
+#side_block_left {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%)
+}
+
+#side_block_right {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%)
+}
+
+
 .bottom_tab {
   width: 100vw;
   position: absolute;
