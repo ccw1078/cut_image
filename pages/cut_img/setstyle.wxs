@@ -120,7 +120,7 @@ function touch_move_left (event, instance) {
   var move_delta = get_move_delta(touch);
   cut_box.setStyle({
     left: int_to_px(current_style.left + move_delta.x),
-    top: int_to_px(current_style),
+    top: int_to_px(current_style.top),
     width: int_to_px(current_style.width - move_delta.x),
     height: int_to_px(current_style.height)
   });
